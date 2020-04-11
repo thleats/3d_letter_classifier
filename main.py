@@ -10,6 +10,7 @@ from mpl_toolkits.mplot3d import Axes3D
 from tqdm import tqdm
 import random
 import statistics
+from scipy.ndimage.interpolation import rotate
 
 path = 'C:/Users/Nolan/Desktop/letters/npy'
 current = os.getcwd()
@@ -41,23 +42,34 @@ class Dataset(data.Dataset):
   def __getitem__(self, index):
         'Generates one sample of data'
         # Select sample
-        num=random.uniform(0,1)
+
         array = self.data[index]
         ID = self.labels[index]
+        num=random.uniform(0,1)
         if num<0.5:
             out= np.flipud(self.data[index]).copy()
         else:
             out = array
             
         num=random.uniform(0,1)
-        
         if num<0.5:
             out2= np.fliplr(out).copy()
         else:
             out2 = out
-
+            
+        num2=round(random.uniform(-5,5))
+        out3= np.roll(out2,num2,axis=0).copy()
         
-        return ID, out2
+        num2=round(random.uniform(-5,5))
+        out4= np.roll(out3,num2,axis=1).copy()
+        
+        num2=round(random.uniform(-1,1))
+        out5= np.roll(out4,num2,axis=2).copy()
+        
+        num2=round(random.uniform(-1,1))
+        out6= np.rot90(out5,k=num2).copy()
+        
+        return ID, out6
 
 class ConvNetwork(nn.Module):
   def __init__(self):
